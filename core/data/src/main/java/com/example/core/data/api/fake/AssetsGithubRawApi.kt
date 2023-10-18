@@ -1,0 +1,22 @@
+package com.example.core.data.api.fake
+
+import android.content.Context
+import com.example.core.data.api.GithubRawApi
+import com.example.core.data.api.model.SponsorResponse
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+
+@OptIn(ExperimentalSerializationApi::class)
+internal class AssetsGithubRawApi(
+    context: Context,
+    private val json: Json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
+) : GithubRawApi {
+    private val sponsors = context.assets.open("sponsors.json")
+    override suspend fun getSponsors(): List<SponsorResponse> {
+        return json.decodeFromStream(sponsors)
+    }
+}
